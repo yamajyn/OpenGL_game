@@ -9,53 +9,36 @@ int xBegin, yBegin;
 int mButton;
 float distance, elevation, azimuth;
 float rot=0.;
-//color
+float x = 0,y=-17,z=0;
+float light[] = {-1.0,1.0,1.0,0.0};
 
-//initial
-float ambient[]  = { 0.4, 0.4, 0.4, 1.0 };//ŠÂ‹«Œõ
-float diffuse[] = { 0.8, 0.8, 0.8, 1.0 };//ŠgŽUŒõ
-float specular[] = { 0.0, 0.0, 0.0, 1.0 };//‹¾–Ê”½ŽË
-//ground
-float groundDif[] = { 160./255,160./255 , 160./255, 1.0 };
-//line
-float lineDif[] = { 70./255,30./255 , 0., 1.0 };
-float lineSpe[] = {0.5, 0.5, 0.5, 1.0};
+int i;
+
 
 
 float shininess = 128.;
 
-void display(void)
-{
-	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glPushMatrix ();
+void scene(void){
+	//color
+	//initial
+	float ambient[]  = { 0.3, 0.3, 0.3, 1.0 };//ŠÂ‹«Œõ
+	float diffuse[] = { 0.8, 0.8, 0.8, 1.0 };//ŠgŽUŒõ
+	float specular[] = { 0.0, 0.0, 0.0, 1.0 };//‹¾–Ê”½ŽË
+	//ground
+	float groundDif[] = { 160./255,160./255 , 160./255, 1.0 };
+	//line
+	float lineDif[] = { 100./255,100./255 , 100./255, 1.0 };
+	float lineSpe[] = {0.8, 0.8, 0.8, 1.0};
+	float makuraDif[] = { 70./255,30./255 , 0./255, 1.0 };
+	//home
+	float homeDif[] = { 180./255,180./255 , 210./255, 1.0 };
+
+	//overheadLine
+	float ovLineDif[] = { 180./255,180./255 , 210./255, 1.0 };
+
 	glEnable(GL_DEPTH_TEST);
 	glEnable( GL_LIGHTING );
-    	glTranslatef( 0.0, 0.0, -distance);
-    	glRotatef( -elevation, 1.0, 0.0, 0.0);
-    	glRotatef( -azimuth, 0.0, 1.0, 0.0);
-
-// x axis
-    	   glColor3f( 1.0, 0.0, 0.0 );
-	   glPushMatrix();
-     	   glBegin( GL_LINES );
-           	glVertex3f( 0., 0., 0.01 );  glVertex3f( 5., 0., 0.01 );
-    	   glEnd();
-    	   glPopMatrix();
-// y axis
-    	   glColor3f( 0.0, 1.0, 0.0 );
-	   glPushMatrix();
-     	   glBegin( GL_LINES );
-        	glVertex3f( 0., 0., 0.01 );  glVertex3f( 0., 5., 0.01 );
-    	   glEnd();
-    	   glPopMatrix();
-// z axis
-    	   glColor3f( 0.0, 0.0, 1.0 );
-	   glPushMatrix();
-     	   glBegin( GL_LINES );
-           	glVertex3f( 0., 0., 0. );  glVertex3f( 0., 0., 5. );
-    	   glEnd();
-    	   glPopMatrix();
-
+	glLightfv( GL_LIGHT0,GL_POSITION,light);
 
 
 	glMaterialfv( GL_FRONT, GL_SPECULAR, specular );
@@ -66,7 +49,7 @@ void display(void)
 	   glPushMatrix ();
 	   glRotatef( -90., 1.0, 0.0, 0.0);
 	   glNormal3f(0., 0., 1.);
-	   glRecti(-100,-100, 100,100);
+	   glRecti(-5000,-5000, 5000,5000);
 	   glPopMatrix ();
 
 
@@ -74,91 +57,113 @@ void display(void)
 
 	glPushMatrix();
 		glMaterialfv( GL_FRONT, GL_DIFFUSE, lineDif );
-		glScalef(200, 100, 100 );
-		glRotatef( rot, 0.0, 1.0, 0.0 );
-		glTranslatef( 0., 1.0, -10.0 );
-		glutSolidCube(2.0);
+		glMaterialfv( GL_FRONT, GL_SPECULAR, lineSpe );
+		glTranslatef( 0., 2.5, -10.0 );
+		glScalef(10000, 2, 1 );
+		glutSolidCube(1.0);
 	glPopMatrix();
 
 	glPushMatrix();
-		glScalef(200, 0.1, 0.05 );
-		glRotatef( rot, 0.0, 1.0, 0.0 );
-		glTranslatef( 0., 1.0, 10.0 );
-		glutSolidCube(2.0);
+		glTranslatef( 0., 2.5, 10.0 );
+		glScalef(10000,2, 1 );
+		glutSolidCube(1.0);
 	glPopMatrix();
 
-// car
-//	   glColor3f(1.0, 1.0, 1.0);
-	   glPushMatrix ();
-	   glRotatef( rot, 0.0, 1.0, 0.0 );
-	   glTranslatef( 0., 0.0, -5.0 );
-   // body
+	//makuragi
+	glMaterialfv( GL_FRONT, GL_SPECULAR, specular );
+	glMaterialfv( GL_FRONT, GL_DIFFUSE, makuraDif );
+	for(i=0; i<1000; i++){
+		glPushMatrix();
+			glTranslatef( i*20-500, 1, 0 );
+			glScalef(6, 1, 30 );
+			glutSolidCube(1.0);
+		glPopMatrix();
+	}
+	//subline
 
-	   	glPushMatrix ();
-           	glTranslatef(0.0, 1.0, 0.0 );
-	   	glScalef(2.0, 0.5, 1.0 );
-//	   	glutWireCube(2.0);
-		glutSolidCube(2.0);
-	   	glPopMatrix();
-   // body-top
-	   	glPushMatrix ();
-           	glTranslatef(0.0, 2.0, 0.0 );
-	   	glScalef(1.2, 0.5, 1.0 );
-//	   	glutWireCube(2.0);
-		glutSolidCube(2.0);
-	   	glPopMatrix();
-   // front wheel
-		glMaterialfv( GL_FRONT, GL_DIFFUSE, diffuse );
-
-	   	glPushMatrix ();
-	   	glTranslatef( -1.0, 0.5, 0.0 );
-		glRotatef( rot*5., 0.0, 0.0, 1.0 );
-	   	glRotatef( 90.0, 1.0, 0.0, 0.0 );
-//	   	myWireCylinder( 0.5, 2.0, 12 );
-		mySolidCylinder( 0.5, 2.4, 4 );
-	   	glPopMatrix();
-   // rear wheel
-	   	glPushMatrix ();
-	  	glTranslatef( 1.0, 0.5, 0.0 );
-		glRotatef( rot*5., 0.0, 0.0, 1.0 );
-	   	glRotatef( 90.0, 1.0, 0.0, 0.0 );
-//	   	myWireCylinder( 0.5, 2.0, 12 );
-		mySolidCylinder( 0.5, 2.4, 4 );
-	   	glPopMatrix();
-   // propeller
-		glPushMatrix ();
-		glTranslatef(0., 2.6, 0.0 );
-		glRotatef( rot*10., 0.0, 1.0, 0.0 );
-		   glPushMatrix ();
-	   	   glRotatef( 10.0, 0.0, 0.0, 1.0 );
-//	   	   glScalef(0.2, 0.05, 1.0 );
-//	   	   glutWireCube(3.0);
-		   glScalef(6., 1.5, 30. );
-		   glutSolidCube(0.1);
-	   	   glPopMatrix();
-
-	   	   glPushMatrix ();
- 	   	   glRotatef( 10.0, 1.0, 0.0, 0.0 );
-//	   	   glScalef(1.0, 0.05, 0.2 );
-//	   	   glutWireCube(3.0);
-	   	   glScalef(30., 1.5, 6.);
-		   glutSolidCube(0.1);
-	   	   glPopMatrix();
+		glPushMatrix();
+			glMaterialfv( GL_FRONT, GL_DIFFUSE, lineDif );
+			glMaterialfv( GL_FRONT, GL_SPECULAR, lineSpe );
+			glTranslatef( 0., 2.5, -45.0 );
+			glScalef(10000, 2, 1 );
+			glutSolidCube(1.0);
 		glPopMatrix();
 
-	    glDisable(GL_LIGHTING);
-	    glDisable(GL_DEPTH_TEST);
-	    glPopMatrix();
+		glPushMatrix();
+			glTranslatef( 0., 2.5, -25.0 );
+			glScalef(10000,2, 1 );
+			glutSolidCube(1.0);
+		glPopMatrix();
+
+		//makuragi
+		glMaterialfv( GL_FRONT, GL_SPECULAR, specular );
+		glMaterialfv( GL_FRONT, GL_DIFFUSE, makuraDif );
+		for(i=0; i<1000; i++){
+			glPushMatrix();
+				glTranslatef( i*20-500, 1, -35 );
+				glScalef(6, 1, 30 );
+				glutSolidCube(1.0);
+			glPopMatrix();
+		}
+
+// home
+glPushMatrix();
+	glMaterialfv( GL_FRONT, GL_DIFFUSE, homeDif );
+	glTranslatef( 0., 6, 32.0 );
+	glScalef(2000, 12, 30 );
+	glutSolidCube(1.0);
+
+glPopMatrix();
+
+//ovLine
+for(i=0; i<100; i++){
+	glPushMatrix();
+		glMaterialfv( GL_FRONT, GL_DIFFUSE, ovLineDif );
+		glTranslatef( i*100., 30, 32.0 );
+		glScalef(1, 60, 1 );
+		glutSolidCube(1.0);
+	glPopMatrix();
+}
+
+
+
+
+	glDisable(GL_LIGHTING);
+	glDisable(GL_DEPTH_TEST);
 	glPopMatrix();
 
+}
+
+
+void display(void)
+{
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glPushMatrix ();
+	glTranslatef( 0.0, 0.0, -distance);
+	glRotatef( -elevation, 1.0, 0.0, 0.0);
+	glRotatef( -azimuth, 0.0, 1.0, 0.0);
+	glTranslatef( x, y, z);
+	scene();
+	glPopMatrix();
 	glutSwapBuffers();
 }
 
 void idle(void)
 {
-
+	//x-=1;
 	glutPostRedisplay();
 	//•Ï”‚ð•Ï‰»‚³‚¹‚é
+}
+
+void initLighting(void){
+	float diffuseL [] = {1.0,1.0,1.0,1.0};
+	float specularL [] = {1.0,1.0,1.0,1.0};
+	float ambientL [] = {0.5,0.5,0.5,1.0};
+
+	glLightfv( GL_LIGHT0,GL_DIFFUSE,diffuseL);
+	glLightfv( GL_LIGHT0,GL_SPECULAR,specularL);
+	glLightfv( GL_LIGHT0,GL_AMBIENT,ambientL);
+	glEnable( GL_LIGHT0);
 }
 
 void myMouse(int button, int state, int x, int y)
@@ -192,22 +197,23 @@ void myMotion(int x, int y)
 }
 
 void myInit (char *progname)
-{    	int width = 600, height = 450;
+{
+	int width = 1280, height = 720;
 
-    	glutInitWindowPosition(0, 0);
-    	glutInitWindowSize( width, height);
-    	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-    	glutCreateWindow(progname);
-    	glClearColor (0.0, 0.0, 0.0, 1.0);
-
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize( width, height);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+    glutCreateWindow(progname);
+    glClearColor (0.0, 0.0, 0.0, 1.0);
    	glutMouseFunc( myMouse );
-    	glutMotionFunc( myMotion );
+    glutMotionFunc( myMotion );
 
-    	distance = 20.0;   elevation=-45.0;    azimuth = 30.0;
+    	distance = 0;   elevation=0;    azimuth = -90;
 
 	glShadeModel(GL_FLAT);
-	glEnable(GL_LIGHT0);
+	initLighting();
 }
+
 void myReshape(int width, int height)
 {
 	float aspect = (float) width / (float) height;
@@ -215,7 +221,7 @@ void myReshape(int width, int height)
 	glViewport(0, 0, width, height);
     	glMatrixMode(GL_PROJECTION);
     	glLoadIdentity();
-    	gluPerspective(60.0, aspect, 1.0, 100.0);
+    	gluPerspective(50.0, aspect, 1.0, 3000.0);
     	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -226,5 +232,6 @@ int main(int argc, char** argv)
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
 	glutMainLoop();
+
 	return(0);
 }
