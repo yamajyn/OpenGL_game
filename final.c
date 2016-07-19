@@ -15,7 +15,7 @@ int mButton;
 float distance, elevation, azimuth;
 float rot=0.;
 float x = 0,y=-25,z=35;
-float light[] = {1.0,1.0,-1.0,0.0};
+float light[] = {-1.0,1.0,-1.0,0.0};
 
 int i;
 int j;
@@ -45,6 +45,7 @@ void scene(void){
 	//overheadLine
 	float ovLineDif[] = { 180./255,180./255 , 210./255, 1.0 };
 	float stopDif[] = {250./255,250./255 , 250./255, 1.0 };
+	float stopDif2[] = {0./255.,0./255. , 0./255., 1.0 };
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable( GL_LIGHTING );
@@ -288,7 +289,8 @@ for(i=0; i<100; i++){
 	glPopMatrix();
 }
 
-//bill
+//stop
+
 
 glMaterialfv( GL_FRONT, GL_DIFFUSE, stopDif );
 glPushMatrix();
@@ -296,13 +298,54 @@ glPushMatrix();
 	glScalef(1, 20, 1 );
 	glutSolidCube(1.0);
 glPopMatrix();
+glMaterialfv( GL_FRONT, GL_DIFFUSE, stopDif );
 glPushMatrix();
-	glTranslatef( 150 ,15, -20.0 );
+	glTranslatef( 149 ,15, -20.0 );
 	glRotatef(45,1,0,0);
 	glScalef(1, 6, 6 );
 	glutSolidCube(1.0);
 glPopMatrix();
+glMaterialfv( GL_FRONT, GL_DIFFUSE, stopDif2 );
+glPushMatrix();
+	glTranslatef( 148.8 ,15, -20.0 );
+	glRotatef(45,1,0,0);
+	glScalef(1, 1, 6 );
+	glutSolidCube(1.0);
+glPopMatrix();
+glPushMatrix();
+	glTranslatef( 148.8 ,15, -20.0 );
+	glRotatef(45,1,0,0);
+	glScalef(1, 6, 1 );
+	glutSolidCube(1.0);
+glPopMatrix();
 
+
+
+glMaterialfv( GL_FRONT, GL_DIFFUSE, stopDif );
+glPushMatrix();
+	glTranslatef( 150+5000 ,10, -20.0 );
+	glScalef(1, 20, 1 );
+	glutSolidCube(1.0);
+glPopMatrix();
+glMaterialfv( GL_FRONT, GL_DIFFUSE, stopDif );
+glPushMatrix();
+	glTranslatef( 149+5000 ,15, -20.0 );
+	glRotatef(45,1,0,0);
+	glScalef(1, 6, 6 );
+	glutSolidCube(1.0);
+glPopMatrix();
+glPushMatrix();
+	glTranslatef( 148.8+5000 ,15, -20.0 );
+	glRotatef(45,1,0,0);
+	glScalef(1, 1, 6 );
+	glutSolidCube(1.0);
+glPopMatrix();
+glPushMatrix();
+	glTranslatef( 148.8+5000 ,15, -20.0 );
+	glRotatef(45,1,0,0);
+	glScalef(1, 6, 1 );
+	glutSolidCube(1.0);
+glPopMatrix();
 
 	glDisable(GL_LIGHTING);
 	glDisable(GL_DEPTH_TEST);
@@ -332,9 +375,10 @@ void idle(void)
   if(v<0){
     v=0;
 		acceleration=0;
-  }
-	x-=v*t + 1./2.*acceleration*t*t;
-  v+=acceleration*t;
+  }else{
+		x-=(v*t + 1./2.*acceleration*t*t)*2.;
+  	v+=(acceleration*t)*2.;
+	}
 elapsedTime = clock();
 	glutPostRedisplay();
 	//•Ï”‚ð•Ï‰»‚³‚¹‚é
@@ -363,7 +407,7 @@ void myKbd( unsigned char key, int x, int y )
 	if ( key == KEY_ESC ) exit( 0 );
   //1
   if (key == '1'){
-    acceleration =-50;
+    acceleration =-4;
   }else if(key=='2'){
     acceleration =-3;
   }else if(key=='3'){
@@ -381,7 +425,7 @@ void myKbd( unsigned char key, int x, int y )
   }else if(key=='9'){
     acceleration =3.5;
   }else if(key=='0'){
-    acceleration =50;
+    acceleration =4;
   }
 }
 
