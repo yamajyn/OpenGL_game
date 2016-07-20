@@ -334,6 +334,7 @@ glPushMatrix();
 	glScalef(1, 6, 6 );
 	glutSolidCube(1.0);
 glPopMatrix();
+glMaterialfv( GL_FRONT, GL_DIFFUSE, stopDif2 );
 glPushMatrix();
 	glTranslatef( 148.8+5000 ,15, -20.0 );
 	glRotatef(45,1,0,0);
